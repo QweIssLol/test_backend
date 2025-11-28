@@ -16,20 +16,12 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-    optionsSuccessStatus: 200,
-    preflightContinue: false,
   })
 );
 app.use(express.json());
 
-// Handle preflight requests explicitly
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://www.pay-ebay.xyz");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(200);
-});
+// Handle all OPTIONS requests with CORS
+app.options("*", cors());
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
